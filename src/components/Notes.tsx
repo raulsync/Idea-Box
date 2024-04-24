@@ -4,15 +4,17 @@ import Note from './Note';
 
 interface INotesPropsType {
   notes: IState[];
+  deleteNote: (id: string) => void;
 }
-const Notes: React.FC<INotesPropsType> = ({ notes }) => {
+const Notes: React.FC<INotesPropsType> = ({ notes, deleteNote }) => {
   return (
     <Box>
       <Typography variant="h5">Notes</Typography>
-      {notes.map((note) => (
+      {notes?.map((note) => (
         <Note
           note={note}
           key={note.id}
+          deleteNote={deleteNote}
         />
       ))}
     </Box>

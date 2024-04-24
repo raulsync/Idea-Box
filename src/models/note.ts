@@ -1,5 +1,5 @@
 export interface IState {
-  id: number;
+  id: string;
   title: string;
   detail: string;
   color: string;

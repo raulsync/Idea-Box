@@ -1,35 +1,43 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Box } from '@mui/material';
+import './App.css';
+import CreateNote from './components/CreateNote';
+import Header from './components/Header';
+import Notes from './components/Notes';
+import { IState } from './models/note';
+import { useEffect, useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [notes, setNotes] = useState<IState[]>([]);
+
+  useEffect(() => {
+    if (sessionStorage.getItem('notes')) {
+      setNotes(JSON.parse(sessionStorage.getItem('notes') as string));
+    }
+  }, []);
+
+  const deleteNote = (id: string) => {
+    const updatedNotes = notes.filter((note) => id !== note.id);
+    setNotes(updatedNotes);
+    sessionStorage.setItem('notes', JSON.stringify(updatedNotes));
+  };
+
+  const addNote = (note: IState) => {
+    setNotes([note, ...notes]);
+    sessionStorage.setItem('notes', JSON.stringify([note, ...notes]));
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Header />
+      <Box style={{ padding: 20 }}>
+        <CreateNote addNote={addNote} />
+        <Notes
+          notes={notes}
+          deleteNote={deleteNote}
+        />
+      </Box>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

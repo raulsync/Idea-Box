@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Box, Button, InputBase, Typography, styled } from '@mui/material';
 import { IState } from '../models/note';
 import { v4 as uuid } from 'uuid';
+import { DETAIL_LIMIT, TITLE_LIMIT } from '../constants/constants';
 
 const Container = styled(Box)`
   & > * {
@@ -27,7 +28,7 @@ const Container = styled(Box)`
 `;
 
 const initialState = {
-  id: 1,
+  id: uuid(),
   title: '',
   detail: '',
   color: '',
@@ -49,7 +50,7 @@ const CreateNote: React.FC<ICreateNotePropsType> = ({ addNote }) => {
     if (error) {
       setError('');
     }
-    setNote({ ...initialState, [e.target.name]: e.target.value });
+    setNote({ ...note, [e.target.name]: e.target.value });
     console.log(note);
   };
 
@@ -58,10 +59,10 @@ const CreateNote: React.FC<ICreateNotePropsType> = ({ addNote }) => {
       setError('all fields are manadatory');
       return;
     }
-    addNote({ ...note, id: Number(uuid()) });
+    addNote({ ...note, id: uuid() });
     console.log(note);
 
-    // setNote(initialState);
+    setNote(initialState);
   };
 
   return (
@@ -72,15 +73,27 @@ const CreateNote: React.FC<ICreateNotePropsType> = ({ addNote }) => {
           placeholder="Title"
           name="title"
           onChange={(e) => onChangeHandler(e)}
+          value={note.title}
+          inputProps={{
+            maxLength: TITLE_LIMIT,
+          }}
         />
-        <Box component={'span'}>30</Box>
+        <Box component={'span'}>
+          {note.title.length}/{TITLE_LIMIT}
+        </Box>
         <InputBase
           type="text"
           placeholder="Detail"
           name="detail"
           onChange={(e) => onChangeHandler(e)}
+          value={note.detail}
+          inputProps={{
+            maxLength: DETAIL_LIMIT,
+          }}
         />
-        <Box component={'span'}>50</Box>
+        <Box component={'span'}>
+          {note.detail.length}/{DETAIL_LIMIT}
+        </Box>
         <InputBase
           type="color"
           value="#ffffff"
